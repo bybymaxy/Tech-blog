@@ -3,53 +3,59 @@ const express = require('express');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
 const routes = require('./controllers');
-const helpers = require('./utils/helpers');
-
-const sequelize = require('./config/connection');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const helpers = require('./utils middleware/helpers');
+const Sequelize = require('sequelize');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 // Set up Handlebars.js engine with custom helpers
 const hbs = exphbs.create({ helpers });
 
-const sess = {
-  // Signs the session
-  secret: 'Super secret secret',
-  // This IS essentially the session
-  cookie: {
-    // when the cookie will expire (in ms)
-    maxAge: 300000,
-    // prevents access through JS in the client
-    httpOnly: true,
-    // Server and Client will reject if not served from HTTPS
-    secure: false,
-    // Only sites on the same domain can use this cookie
-    sameSite: 'strict',
-  },
-  // forces the session to be saved even if nothing changed
-  resave: false,
-  // forces a session to be saved when it is new regardless of if anything has changed
-  saveUninitialized: true,
-  // where to store the session on the server
-  store: new SequelizeStore({
-    db: sequelize
-  })
-};
+// Create a new Sequelize instance
+const sequelize = new Sequelize('tech_blog', 'root', 'Halloween1!', {
+  host: 'localhost',
+  dialect: 'mysql',
+  // other options
+});
 
-app.use(session(sess));
-
-// Inform Express.js on which template engine to use
-app.engine('handlebars', hbs.engine);
+// Set the view engine and views directory
 app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+// ... (other configurations)
 
-app.use(routes);
+// Sample route to render the homepage template
+app.get('/', (req, res) => {
+  // Fetch your blog posts data from the database
+  const posts = []; // Replace with actual data retrieval logic
 
+  res.render('home', { user: req.session.user, posts });
+});
+
+// Sample route to render the sign-in template
+app.get('/signin', (req, res) => {
+  res.render('signin');
+});
+
+// Sample route to handle sign-in logic
+app.post('/signin', (req, res) => {
+  // Implement your sign-in logic here
+});
+
+// Sample route to render the sign-up template
+app.get('/signup', (req, res) => {
+  res.render('signup');
+});
+
+// Sample route to handle sign-up logic
+app.post('/signup', (req, res) => {
+  // Implement your sign-up logic here
+});
+
+// ... (other routes)
+
+// Start the server
 sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log('Now listening'));
+  app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
 });

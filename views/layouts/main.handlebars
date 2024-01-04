@@ -1,37 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Im a boilerplate</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <title>Blog CMS</title>
+  <!-- Add your stylesheets and other head elements here -->
 </head>
-
 <body>
-  <div >
-    <header>
-      <nav>
-        {{#if logged_in}}
-        <a href="/profile">profile</a> |
-        <button class="no-button" id="logout">logout</button>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        {{#if user}}
+          <li><a href="/logout">Logout</a></li>
         {{else}}
-        <a href="/login">login</a>
+          <li><a href="/signup">Sign Up</a></li>
+          <li><a href="/signin">Sign In</a></li>
         {{/if}}
-      </nav>
-    </header>
-    <main>
-      {{{ body }}}
-    </main>
-    <footer>
-      
-    </footer>
-  </div>
+      </ul>
+    </nav>
+  </header>
 
-  <!-- Render script for logged in users only -->
-  {{#if logged_in}}
-  <script src="/js/logout.js"></script>
-  {{/if}}
+  {{{body}}}
+
+  <!-- Add your scripts and other body elements here -->
 </body>
-
 </html>

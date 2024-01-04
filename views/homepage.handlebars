@@ -1,2 +1,18 @@
-<!-- Loop over each object in the projects array -->
-<h1>I AM HERE TO BE USED</h1>
+<section>
+  <h1>Welcome to the Blog CMS</h1>
+
+  {{#if user}}
+    <p>Hello, {{user.username}}!</p>
+  {{else}}
+    <p>Please sign up or sign in to access the full functionality.</p>
+  {{/if}}
+
+  {{#each posts}}
+    <article>
+      <h2>{{title}}</h2>
+      <p>{{content}}</p>
+      <p>Posted by {{user.username}} on {{createdAt}}</p>
+      <a href="/post/{{id}}">Read More</a>
+    </article>
+  {{/each}}
+</section>

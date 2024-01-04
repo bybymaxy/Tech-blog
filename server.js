@@ -23,12 +23,22 @@ const sequelize = new Sequelize('tech_blog', 'root', 'Halloween1!', {
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
+// Set up the express-session middleware
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true
+}));
+
 // ... (other configurations)
 
 // Sample route to render the homepage template
 app.get('/', (req, res) => {
   // Fetch your blog posts data from the database
   const posts = []; // Replace with actual data retrieval logic
+
+  // Set the 'user' property in the session
+  req.session.user = { /* user data */ };
 
   res.render('home', { user: req.session.user, posts });
 });

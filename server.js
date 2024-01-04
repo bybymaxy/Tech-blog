@@ -19,6 +19,10 @@ const sequelize = new Sequelize('tech_blog', 'root', 'Halloween1!', {
   // other options
 });
 
+// Set up Handlebars.js engine
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+
 // Set the view engine and views directory
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
@@ -31,6 +35,11 @@ app.use(session({
 }));
 
 // ... (other configurations)
+
+app.get('/dashboard', (req, res) => {
+  // Handle the request and send the response
+  res.send('Dashboard Page');
+});
 
 // Sample route to render the homepage template
 app.get('/', (req, res) => {

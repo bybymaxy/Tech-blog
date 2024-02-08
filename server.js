@@ -1,80 +1,41 @@
-const path = require('path');
 const express = require('express');
-const session = require('express-session');
-const exphbs = require('express-handlebars');
 const routes = require('./controllers');
-const helpers = require('./utils middleware/helpers');
-const Sequelize = require('sequelize');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Set up Handlebars.js engine with custom helpers
+const { Sequelize } = require('sequelize');
+const path = require('path');
+const helpers = require('./utils/helpers');
+const exphbs = require('express-handlebars');
 const hbs = exphbs.create({ helpers });
+const session = require('express-session');
+const app = express();
+const PORT = process.env.PORT || 3001;
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
-// Create a new Sequelize instance
-const sequelize = new Sequelize('tech_blog', 'root', 'Halloween1!', {
+const database = process.env.DB_NAME || 'tech_blog';
+const password = process.env.DB_PASSWORD || '!z<DuiPi|0xUrF';
+
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PW, {
   host: 'localhost',
   dialect: 'mysql',
-  // other options
 });
 
-// Set up Handlebars.js engine
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
-
-// Set the view engine and views directory
-app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
-
-// Set up the express-session middleware
-app.use(session({
-  secret: 'your-secret-key',
+const sess = {
+  secret: 'Super secret secret',
+  cookie: { maxAge: 36000 },
   resave: false,
-  saveUninitialized: true
-}));
+  saveUninitialized: true,
+  store: new SequelizeStore({
+    db: sequelize,
+  }),
+};
 
-// ... (other configurations)
+app.use(session(sess));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+app.use(routes);
 
-app.get('/dashboard', (req, res) => {
-  // Handle the request and send the response
-  res.send('Dashboard Page');
-});
-
-// Sample route to render the homepage template
-app.get('/', (req, res) => {
-  // Fetch your blog posts data from the database
-  const posts = []; // Replace with actual data retrieval logic
-
-  // Set the 'user' property in the session
-  req.session.user = { /* user data */ };
-
-  res.render('home', { user: req.session.user, posts });
-});
-
-// Sample route to render the sign-in template
-app.get('/signin', (req, res) => {
-  res.render('signin');
-});
-
-// Sample route to handle sign-in logic
-app.post('/signin', (req, res) => {
-  // Implement your sign-in logic here
-});
-
-// Sample route to render the sign-up template
-app.get('/signup', (req, res) => {
-  res.render('signup');
-});
-
-// Sample route to handle sign-up logic
-app.post('/signup', (req, res) => {
-  // Implement your sign-up logic here
-});
-
-// ... (other routes)
-
-// Start the server
 sequelize.sync({ force: false }).then(() => {
-  app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
+  app.listen(PORT, () => console.log('Now listening'));
 });

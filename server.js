@@ -1,5 +1,6 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
-const routes = require('./controllers/api');
+const routes = require('./controllers');
 const { Sequelize } = require('sequelize');
 const path = require('path');
 const helpers = require('./utils/helpers');
@@ -11,7 +12,7 @@ const PORT = process.env.PORT || 3001;
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const database = process.env.DB_NAME || 'tech_blog';
-const password = process.env.DB_PASSWORD || '!z<DuiPi|0xUrF';
+const password = process.env.DB_PASSWORD || 'Halloween1!';
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PW, {
   host: 'localhost',
